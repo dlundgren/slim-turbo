@@ -1,0 +1,57 @@
+{
+  "name": "dlundgren/slim-turbo",
+  "type": "library",
+  "description": "SlimTurbo is an add on to Slim to enable full route caching",
+  "keywords": ["framework","micro","api","router"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "David Lundgren",
+      "email": "dlundgren@syberisle.net",
+      "homepage": "http://www.davidscode.com"
+    }
+  ],
+  "config": {
+    "sort-packages": true
+  },
+  "require": {
+    "middlewares/utils": "^2.2",
+    "psr/simple-cache": "^1.0",
+    "slim/slim": "^4.0"
+  },
+  "require-dev": {
+    "cache/filesystem-adapter": "^1.0",
+    "cache/simple-cache-bridge": "^1.0",
+    "guzzlehttp/psr7": "^1.5",
+    "http-interop/http-factory-guzzle": "^1.0",
+    "nyholm/psr7": "^1.1",
+    "nyholm/psr7-server": "^0.3.0",
+    "php-di/php-di": "^6.0",
+    "phpspec/prophecy": "^1.8",
+    "phpstan/phpstan": "^0.11.5",
+    "phpunit/phpunit": "^7.5",
+    "slim/http": "^0.7",
+    "slim/psr7": "^0.3",
+    "squizlabs/php_codesniffer": "^3.4.2",
+    "syberisle/coding-standards": "^2.0",
+    "symfony/dependency-injection": "^4.3",
+    "zendframework/zend-diactoros": "^2.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Slim\\Turbo\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Slim\\Turbo\\Test\\": "tests/src"
+    }
+  },
+  "scripts": {
+    "test": "@phpunit",
+    "test-coverage" : "@php vendor/bin/phpunit --coverage-html=tests/html-coverage",
+    "phpunit": "@php vendor/bin/phpunit",
+    "phpcs": "@php vendor/bin/phpcs",
+    "phpstan": "@php -d memory_limit=-1 vendor/bin/phpstan analyse src"
+  }
+}
