@@ -53,7 +53,10 @@ class MiddlewareDispatcher
 				$kernel = new RouteRunner($this->container);
 			}
 			else {
-				throw new \RuntimeException("Unable to change the RouteRunner. Please supply a container or ensure that " . RouteRunner::class . " exists in the container.");
+				throw new \RuntimeException(
+					"Unable to change the RouteRunner. Please supply a container or ensure " .
+					"that " . RouteRunner::class . " exists in the container."
+				);
 			}
 		}
 
