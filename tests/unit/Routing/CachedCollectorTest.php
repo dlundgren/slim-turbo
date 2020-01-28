@@ -19,7 +19,7 @@ class CachedCollectorTest
 	{
 		list($namedRoutes, $dispatchData) = $this->collector->build();
 		self::assertEquals(['test1' => ['/1', 'test1', []], 'test2' => ['/2', 'test2', []]], $namedRoutes);
-		self::assertEquals([['GET' => ['/1' => 'test1', '/2' => 'test2']],[]], $dispatchData);
+		self::assertEquals([['GET' => ['/1' => 'test1', '/2' => 'test2']], []], $dispatchData);
 	}
 
 	public function testBuildOnlyGeneratesOnce()

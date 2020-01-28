@@ -9,7 +9,6 @@ namespace Slim\Turbo\Routing;
 
 use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Interfaces\RouteGroupInterface;
-use Slim\Interfaces\RouteInterface;
 use Slim\Routing\RouteCollectorProxy;
 
 /**
@@ -25,10 +24,10 @@ class Router
 	 */
 	protected $routeGroups = [];
 
-	public function __construct(RouteCollectorInterface $routeCollector, $basePath = '')
+	public function __construct(RouteCollectorInterface $routeCollector, $groupPattern = '')
 	{
 		$this->routeCollector = $routeCollector;
-		$this->basePath       = $basePath;
+		$this->groupPattern   = $groupPattern;
 	}
 
 	/**

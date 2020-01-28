@@ -7,8 +7,6 @@
 
 namespace Slim\Turbo\Routing;
 
-use Slim\Interfaces\AdvancedCallableResolverInterface;
-use Slim\Interfaces\CallableResolverInterface;
 use Slim\Interfaces\RouteCollectorProxyInterface;
 use Slim\Interfaces\RouteGroupInterface;
 

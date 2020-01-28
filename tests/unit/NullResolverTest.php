@@ -11,7 +11,7 @@ class NullResolverTest
 
 	public function setUp()
 	{
-		$this->resolver  = new NullResolver();
+		$this->resolver = new NullResolver();
 	}
 
 	public function testResolvesFromContainer()

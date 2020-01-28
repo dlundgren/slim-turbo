@@ -51,7 +51,7 @@ class RouteCollectorTest
 	{
 		self::assertInstanceOf(Route::class, $this->rc->map(['GET'], ' / ', 'test'));
 	}
-	
+
 	public function testBuildRouteHandlesMiddleware()
 	{
 		$route = $this->rc->lookupRoute('mw');

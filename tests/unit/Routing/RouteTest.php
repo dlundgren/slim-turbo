@@ -42,11 +42,10 @@ class RouteTest
 
 	public function testHandleConvertsCallable()
 	{
-		$call = function () {
+		$call  = function () {
 			return Factory::createResponse(333);
 		};
 		$route = new Route(['GET'], 't', $call, Factory::getResponseFactory(), $this->di);
-
 
 		self::assertEquals(333, $route->handle(Factory::createServerRequest('GET', '/'))->getStatusCode());
 	}

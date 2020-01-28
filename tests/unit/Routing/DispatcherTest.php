@@ -22,7 +22,7 @@ class DispatcherTest
 					->getMock();
 		$frd->expects($this->once())->method('dispatch')->willReturn([FastRouteDispatcher::NOT_FOUND, 't1', ['t2']]);
 
-		$d = new Dispatcher($this->rc, $frd);
+		$d       = new Dispatcher($this->rc, $frd);
 		$results = $d->dispatch('GET', '/');
 
 		self::assertInstanceOf(RoutingResults::class, $results);
