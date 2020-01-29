@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Middleware\RoutingMiddleware;
+use Slim\Routing\RouteContext;
 
 class RouteRunnerTest
 	extends TestCase
@@ -24,8 +25,8 @@ class RouteRunnerTest
 			}
 		};
 		$request = Factory::createServerRequest('GET', '/')
-						  ->withAttribute('routingResults', true)
-						  ->withAttribute('route', $route);
+						  ->withAttribute(RouteContext::ROUTING_RESULTS, true)
+						  ->withAttribute(RouteContext::ROUTE, $route);
 
 		$response = (new RouteRunner(new Container()))->handle($request);
 
@@ -36,7 +37,7 @@ class RouteRunnerTest
 	{
 		$request   = Factory::createServerRequest('GET', '/')
 							->withAttribute(
-								'route',
+								RouteContext::ROUTE,
 								new class
 									implements RequestHandlerInterface
 								{

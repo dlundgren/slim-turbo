@@ -1,3 +1,7 @@
+## 0.2.1 - 2020-01-29
+### Fixed
+- Bug with route / routing results attributes not using the correct attribute name on the request.
+
 ## 0.2.0 - 2020-01-28
 ### Fixed
 - Updated groups not receiving their full pattern.

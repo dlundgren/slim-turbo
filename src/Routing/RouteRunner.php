@@ -12,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Middleware\RoutingMiddleware;
+use Slim\Routing\RouteContext;
 
 class RouteRunner
 	implements RequestHandlerInterface
@@ -29,10 +30,10 @@ class RouteRunner
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
 		// If routing hasn't been done, then do it now so we can dispatch
-		if ($request->getAttribute('routingResults') === null) {
+		if ($request->getAttribute(RouteContext::ROUTING_RESULTS) === null) {
 			$request = $this->container->get(RoutingMiddleware::class)->performRouting($request);
 		}
 
-		return $request->getAttribute('route')->handle($request);
+		return $request->getAttribute(RouteContext::ROUTE)->handle($request);
 	}
 }
