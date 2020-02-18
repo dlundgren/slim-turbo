@@ -12,6 +12,7 @@ use FastRoute\RouteCollector as FastRouteCollector;
 use FastRoute\RouteParser\Std;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
+use Slim\Interfaces\RouteInterface;
 
 /**
  * Handles the basic setup of the caching data
@@ -85,6 +86,34 @@ class CachedCollector
 		$this->generated = true;
 
 		return [$this->routes, $this->data];
+	}
+
+	/**
+	 * Changes the routes name in our array
+	 *
+	 * @param string $oldName The old name to change
+	 * @param string $newName The new name to set
+	 */
+	public function updateRouteName($oldName, $newName)
+	{
+		if ($oldName !== $newName && isset($this->routes[$oldName])) {
+			$this->routes[$newName] = $this->routes[$oldName];
+			unset($this->routes[$oldName]);
+		}
+	}
+
+	/**
+	 * Overrides the parent createRoute so that we can watch any name changes on our routes
+	 *
+	 * {@inheritDoc}
+	 */
+	protected function createRoute(array $methods, string $pattern, $callable): RouteInterface
+	{
+		$route =  parent::createRoute($methods, $pattern, $callable);
+
+		$route->watchNameChange($this);
+
+		return $route;
 	}
 
 	protected function resolveFastRouteCollector(): FastRouteCollector

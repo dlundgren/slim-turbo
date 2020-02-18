@@ -16,7 +16,7 @@ class RouterTest
 	public function setUp()
 	{
 		$this->router = new Router(
-			new RouteCollector(Factory::getResponseFactory()),
+			new CachedCollector(Factory::getResponseFactory()),
 			'/'
 		);
 	}

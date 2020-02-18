@@ -69,27 +69,13 @@ class RouteCollector
 	}
 
 	/**
-	 * Changes the routes name in our array
-	 *
-	 * @param string $oldName
-	 * @param string $newName
-	 */
-	public function updateRouteName($oldName, $newName)
-	{
-		if (isset($this->routes[$oldName])) {
-			$this->routes[$newName] = $this->routes[$oldName];
-			unset($this->routes[$oldName]);
-		}
-	}
-
-	/**
 	 * Overrides the parent createRoute so that we don't need a strategy, as route callables are MiddlewareInterface's
 	 *
 	 * {@inheritDoc}
 	 */
 	protected function createRoute(array $methods, string $pattern, $callable): RouteInterface
 	{
-		$route = new Route(
+		return new Route(
 			$methods,
 			$pattern,
 			$callable,
@@ -98,10 +84,6 @@ class RouteCollector
 			$this->routeGroups,
 			$this->routeCounter
 		);
-
-		$route->watchNameChange($this);
-
-		return $route;
 	}
 
 	/**

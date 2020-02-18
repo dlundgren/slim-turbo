@@ -41,7 +41,7 @@ class RouteCollectorTest
 		self::assertInstanceOf(Route::class, $this->rc->lookupRoute('test'));
 	}
 
-	public function testLookupRouteThrowExceptionWhenMissingRoute()
+	public function testLookupRouteThrowsExceptionWhenMissingRoute()
 	{
 		self::expectException(\RuntimeException::class);
 		$this->rc->lookupRoute('test_exception');

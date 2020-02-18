@@ -1,3 +1,10 @@
+## 0.2.2 - 2020-02-17
+### Fixed
+- Bug with Routing collection removing routes when the route name changes.
+
+### Changed
+- Moved the route name watching in to the CachedCollector, since the RouteCollector should only receive the cached routes.
+
 ## 0.2.1 - 2020-01-29
 ### Fixed
 - Bug with route / routing results attributes not using the correct attribute name on the request.
