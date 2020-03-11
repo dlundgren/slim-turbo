@@ -53,8 +53,7 @@ class MiddlewareDispatcherTest
 		$this->dispatcher = new MiddlewareDispatcher($this->di);
 		$this->dispatcher->seedMiddlewareStack(
 			new class
-				implements RequestHandlerInterface
-			{
+				implements RequestHandlerInterface {
 				public function handle(ServerRequestInterface $request): ResponseInterface
 				{
 					return Factory::createResponse(MiddlewareDispatcherTest::DEFAULT_TEST_STATUS_CODE);
@@ -78,6 +77,18 @@ class MiddlewareDispatcherTest
 		self::assertEquals($mw, $dispatcher->getMiddleware());
 	}
 
+	public function testSeedMiddlewareStackThrowsExceptionWhenMissingRouteRunner()
+	{
+		$dispatcher = new MiddlewareDispatcher();
+		$this->expectException(\RuntimeException::class);
+		$dispatcher->seedMiddlewareStack(
+			new RouteRunner(
+				$this->createMock(RouteResolver::class),
+				$this->createMock(RouteParser::class)
+			)
+		);
+	}
+
 	public function testAddsWithoutResolving()
 	{
 		$this->dispatcher->add('t1');
@@ -97,8 +108,7 @@ class MiddlewareDispatcherTest
 		$this->di->set(
 			't5',
 			new class
-				implements MiddlewareInterface
-			{
+				implements MiddlewareInterface {
 				public function process(
 					ServerRequestInterface $request,
 					?RequestHandlerInterface $handler = null
@@ -117,8 +127,7 @@ class MiddlewareDispatcherTest
 		$this->di->set(
 			\Slim\Turbo\Routing\RouteRunner::class,
 			new class
-				implements RequestHandlerInterface
-			{
+				implements RequestHandlerInterface {
 				public function handle(ServerRequestInterface $request): ResponseInterface
 				{
 					return Factory::createResponse(333);
@@ -142,6 +151,22 @@ class MiddlewareDispatcherTest
 	{
 		$test = function () {
 			return Factory::createResponse(222);
+		};
+
+		$this->dispatcher->add($test);
+
+		self::assertEquals(222, $this->dispatcher->handle(Factory::createServerRequest('GET', '/'))->getStatusCode());
+	}
+
+	public function testHandlesMiddlewareInstance()
+	{
+		$test = new class
+			implements MiddlewareInterface {
+			public function process(ServerRequestInterface $request,
+									RequestHandlerInterface $handler): ResponseInterface
+			{
+				return Factory::createResponse(222);
+			}
 		};
 
 		$this->dispatcher->add($test);

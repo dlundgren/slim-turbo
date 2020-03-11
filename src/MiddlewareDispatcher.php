@@ -46,11 +46,10 @@ class MiddlewareDispatcher
 	public function seedMiddlewareStack(RequestHandlerInterface $kernel): void
 	{
 		if ($kernel instanceof SlimRouteRunner) {
-			if ($this->container->has(Routing\RouteRunner::class)) {
-				$kernel = $this->container->get(Routing\RouteRunner::class);
-			}
-			elseif ($this->container) {
-				$kernel = new RouteRunner($this->container);
+			if ($this->container) {
+				$kernel = $this->container->has(Routing\RouteRunner::class)
+					? $this->container->get(Routing\RouteRunner::class)
+					: new RouteRunner($this->container);
 			}
 			else {
 				throw new \RuntimeException(
@@ -100,14 +99,14 @@ class MiddlewareDispatcher
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
 		foreach ($this->middleware as $middleware) {
-			if (is_callable($middleware)) {
-				$this->addCallable($middleware);
-			}
-			elseif (is_string($middleware)) {
+			if (is_string($middleware)) {
 				$this->addMiddleware($this->container->get($middleware));
 			}
-			else {
+			elseif ($middleware instanceof MiddlewareInterface) {
 				$this->addMiddleware($middleware);
+			}
+			elseif (is_callable($middleware)) {
+				$this->addCallable($middleware);
 			}
 		}
 
