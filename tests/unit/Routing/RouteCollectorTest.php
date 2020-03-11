@@ -4,6 +4,7 @@ namespace Slim\Turbo\Routing;
 
 use Middlewares\Utils\Factory;
 use PHPUnit\Framework\TestCase;
+use Slim\Turbo\Exception\InvalidRoute;
 
 class RouteCollectorTest
 	extends TestCase
@@ -32,7 +33,7 @@ class RouteCollectorTest
 
 	public function testGetNamedRouteThrowsException()
 	{
-		self::expectException(\RuntimeException::class);
+		self::expectException(InvalidRoute::class);
 		$this->rc->getNamedRoute('test_exception');
 	}
 
@@ -43,7 +44,7 @@ class RouteCollectorTest
 
 	public function testLookupRouteThrowsExceptionWhenMissingRoute()
 	{
-		self::expectException(\RuntimeException::class);
+		self::expectException(InvalidRoute::class);
 		$this->rc->lookupRoute('test_exception');
 	}
 

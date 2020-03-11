@@ -9,9 +9,10 @@ namespace Slim\Turbo\Routing;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-use RuntimeException;
 use Slim\Interfaces\RouteInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Routing\RouteParser;
+use Slim\Turbo\Exception\InvalidRoute;
 
 class RouteCollector
 	extends \Slim\Routing\RouteCollector
@@ -28,7 +29,6 @@ class RouteCollector
 	) {
 		$this->responseFactory = $responseFactory;
 		$this->container       = $container;
-		$this->routeParser     = $routeParser ?? new RouteParser($this);
 		$this->routes          = $routes;
 	}
 
@@ -51,7 +51,25 @@ class RouteCollector
 			return $this->cache[$name];
 		}
 
-		throw new RuntimeException('Named route does not exist for name: ' . $name);
+		throw new InvalidRoute("Named route does not exist for name: {$name}");
+	}
+
+	/**
+	 * Returns the RouteParserInterface as defined in the container or creates the RouteParser
+	 *
+	 * {@inheritDoc}
+	 */
+	public function getRouteParser(): RouteParserInterface
+	{
+		if ($this->routeParser) {
+			return $this->routeParser;
+		}
+
+		if ($this->container && $this->container->has(RouteParserInterface::class)) {
+			$this->routeParser = $this->container->get(RouteParserInterface::class);
+		}
+
+		return $this->routeParser ?? ($this->routeParser = new RouteParser($this));
 	}
 
 	/**
@@ -62,7 +80,7 @@ class RouteCollector
 	public function lookupRoute(string $identifier): RouteInterface
 	{
 		if (!isset($this->routes[$identifier])) {
-			throw new RuntimeException("Route not found {$identifier}, looks like your route cache is stale.");
+			throw new InvalidRoute("Route not found {$identifier}, looks like your route cache is stale.");
 		}
 
 		return $this->getNamedRoute($identifier);
