@@ -1,3 +1,20 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+### Added
+- InvalidRoute exception when the route is not found
+
+### Changed
+- RouteCollector will now call the container when getRouteParser is called
+- Changed the order of handling middleware in MiddlewareDispatcher
+
+### Fixed
+- Bug with MiddlewareDispatcher calling has() on the container without a container being set.
+
 ## 0.2.2 - 2020-02-17
 ### Fixed
 - Bug with Routing collection removing routes when the route name changes.
