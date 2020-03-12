@@ -172,7 +172,8 @@ class Symfony
 				);
 
 		$builder->register(RouteParserInterface::class, RouteParser::class)
-				->setArgument('$routeCollector', new Reference(RouteCollectorInterface::class));
+				->setArgument('$routeCollector', new Reference(RouteCollectorInterface::class))
+				->setPublic(true);
 		$builder->register(App::class)
 				->setArguments(
 					[
