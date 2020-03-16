@@ -15,6 +15,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Interfaces\MiddlewareDispatcherInterface;
 use Slim\MiddlewareDispatcher as SlimMiddlewareDispatcher;
 use Slim\Routing\RouteRunner as SlimRouteRunner;
+use Slim\Turbo\Middleware\ParameterAware;
 use Slim\Turbo\Routing\RouteRunner;
 
 /**
@@ -77,7 +78,7 @@ class MiddlewareDispatcher
 	 *
 	 * {@inheritDoc}
 	 */
-	public function add($middleware): MiddlewareDispatcherInterface
+	public function add($middleware, ...$params): MiddlewareDispatcherInterface
 	{
 		if (is_array($middleware)) {
 			foreach ($middleware as $mw) {
@@ -85,7 +86,9 @@ class MiddlewareDispatcher
 			}
 		}
 		else {
-			$this->middleware[] = $middleware;
+			$this->middleware[] = empty($params)
+				? $middleware
+				: [$middleware, $params];
 		}
 
 		return $this;
@@ -99,17 +102,57 @@ class MiddlewareDispatcher
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
 		foreach ($this->middleware as $middleware) {
-			if (is_string($middleware)) {
-				$this->addMiddleware($this->container->get($middleware));
-			}
-			elseif ($middleware instanceof MiddlewareInterface) {
-				$this->addMiddleware($middleware);
-			}
-			elseif (is_callable($middleware)) {
-				$this->addCallable($middleware);
-			}
+			is_callable($middleware = $this->resolveMiddleware($middleware))
+				? $this->addCallable($middleware)
+				: $this->addMiddleware($middleware);
 		}
 
 		return parent::handle($request);
+	}
+
+	/**
+	 * Returns the resolve middleware
+	 *
+	 * @param string|MiddlewareInterface|callable|array $middleware The middleware to resolve
+	 *
+	 * @return callable|MiddlewareInterface
+	 */
+	protected function resolveMiddleware($middleware)
+	{
+		if (is_string($middleware)) {
+			$middleware = $this->container->get($middleware);
+		}
+		elseif ($middleware instanceof MiddlewareInterface || is_callable($middleware)) {
+			// do nothing
+		}
+		elseif (is_array($middleware)) {
+			$middleware = $this->resolveMiddlewareWithParameters(...$middleware);
+		}
+		else {
+			throw new \InvalidArgumentException('Invalid Middleware');
+		}
+
+		return $middleware;
+	}
+
+	/**
+	 * Resolves the middleware to a concrete instance and passes in the parameters
+	 *
+	 * @param string|callable|MiddlewareInterface $middleware The middleware to resolve
+	 * @param mixed                               $parameters Parameters to pass in to the middleware
+	 *
+	 * @return MiddlewareInterface
+	 */
+	protected function resolveMiddlewareWithParameters($middleware, $parameters): MiddlewareInterface
+	{
+		$middleware = $this->resolveMiddleware($middleware);
+		if ($middleware instanceof ParameterAware) {
+			return $middleware->withParameters($parameters);
+		}
+		elseif (is_callable($middleware)) {
+			return $middleware(...$parameters);
+		}
+
+		throw new \RuntimeException("Cannot pass parameters to non-ParameterAware Middleware.");
 	}
 }

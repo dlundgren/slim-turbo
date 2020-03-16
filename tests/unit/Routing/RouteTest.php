@@ -6,6 +6,7 @@ use DI\Container;
 use Middlewares\Utils\Factory;
 use PHPUnit\Framework\TestCase;
 use Slim\Interfaces\RouteCollectorProxyInterface;
+use Slim\Turbo\Test\RoutedMiddleware;
 use Slim\Turbo\Test\TestController;
 
 class RouteTest
@@ -15,6 +16,7 @@ class RouteTest
 	{
 		$this->di = new Container();
 		$this->di->set('test', new TestController());
+		$this->di->set('routed', new RoutedMiddleware());
 		$this->route = new Route(['GET'], 't', 'test', Factory::getResponseFactory(), $this->di);
 	}
 
@@ -48,5 +50,23 @@ class RouteTest
 		$route = new Route(['GET'], 't', $call, Factory::getResponseFactory(), $this->di);
 
 		self::assertEquals(333, $route->handle(Factory::createServerRequest('GET', '/'))->getStatusCode());
+	}
+
+	public function testHandlesParameterizedMiddleware()
+	{
+		$route = new Route(['GET'], 't', 'test', Factory::getResponseFactory(), $this->di);
+		$route->add('routed', 'kakaw', 'manager');
+		$r = $route->handle(Factory::createServerRequest('GET', '/'));
+
+		self::assertEquals(['kakaw', 'manager'], $r->getHeader('test'));
+	}
+
+	public function testHandlesParameterizedMiddlewareByClassName()
+	{
+		$route = new Route(['GET'], 't', 'test', Factory::getResponseFactory(), $this->di);
+		$route->add($middleware = new RoutedMiddleware, 'manager');
+		$r = $route->handle(Factory::createServerRequest('GET', '/'));
+
+		self::assertEquals(['manager'], $r->getHeader('test'));
 	}
 }

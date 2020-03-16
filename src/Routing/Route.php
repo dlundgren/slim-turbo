@@ -112,4 +112,15 @@ class Route
 	{
 		return $this->handle($request);
 	}
+
+	/**
+	 * Overrides the parent to allow extra parameters
+	 * {@inheritDoc}
+	 */
+	public function add($middleware, ...$params): RouteInterface
+	{
+		$this->middlewareDispatcher->add($middleware, ...$params);
+
+		return $this;
+	}
 }

@@ -13,6 +13,7 @@ use Slim\Routing\RouteParser;
 use Slim\Routing\RouteResolver;
 use Slim\Routing\RouteRunner;
 use Slim\Turbo\Routing\RouteCollector;
+use Slim\Turbo\Test\RoutedMiddleware;
 
 class MiddlewareDispatcherTest
 	extends TestCase
@@ -172,5 +173,45 @@ class MiddlewareDispatcherTest
 		$this->dispatcher->add($test);
 
 		self::assertEquals(222, $this->dispatcher->handle(Factory::createServerRequest('GET', '/'))->getStatusCode());
+	}
+
+	public function testResolveMiddlewareThrowsExceptionOnBadMiddleware()
+	{
+		$this->dispatcher->add(new \stdClass());
+
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('Invalid Middleware');
+
+		$this->dispatcher->handle(Factory::createServerRequest('GET', '/'));
+	}
+
+	public function testResolveMiddlewareWithParametersThrowsException()
+	{
+		$test = new class
+			implements MiddlewareInterface {
+			public function process(ServerRequestInterface $request,
+									RequestHandlerInterface $handler): ResponseInterface
+			{
+				return Factory::createResponse(222);
+			}
+		};
+
+		$this->dispatcher->add($test, 'bad');
+
+		$this->expectException(\RuntimeException::class);
+		$this->expectExceptionMessage('Cannot pass parameters to non-ParameterAware Middleware.');
+
+		$this->dispatcher->handle(Factory::createServerRequest('GET', '/'));
+	}
+
+	public function testResolveMiddlewareHonorsCallable()
+	{
+		$test = function (...$args) use (&$routed){
+			return $routed = (new RoutedMiddleware())->withParameters($args);
+		};
+
+		$this->dispatcher->add($test, 'bad');
+		$this->dispatcher->handle(Factory::createServerRequest('GET', '/'));
+		self::assertEquals(['bad'], $routed->parameters());
 	}
 }
