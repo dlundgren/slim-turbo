@@ -5,6 +5,7 @@ namespace Slim\Turbo\Routing\Cache;
 use PHPUnit\Framework\TestCase;
 use Slim\Interfaces\RouteCollectorProxyInterface;
 use Slim\Turbo\Provider\RouteProvider;
+use Slim\Turbo\Routing\CachedCollector;
 
 class FactoryTest
 	extends TestCase
@@ -58,5 +59,13 @@ class FactoryTest
 
 		self::assertEquals([1], Factory::build(Factory::NAMED_ROUTES, $this->provider, $cache));
 		self::assertEquals(0, $this->provider->added);
+	}
+
+	public function testBuildUsesProvidedCacheCollector()
+	{
+		$collector = $this->createMock(CachedCollector::class);
+		$collector->expects($this->once())->method('build')->willReturn([[],[]]);
+
+		Factory::build(Factory::NAMED_ROUTES, $this->provider, new Memory, $collector);
 	}
 }

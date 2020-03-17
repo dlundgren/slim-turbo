@@ -34,14 +34,19 @@ class Factory
 	/**
 	 * Builds the requested cache key
 	 *
-	 * @param string              $key
-	 * @param RouteProvider       $provider
-	 * @param CacheInterface|null $cache
+	 * @param string               $key       The key to build
+	 * @param RouteProvider        $provider  The route provider for routes
+	 * @param CacheInterface|null  $cache     Where the routes should be cached
+	 * @param CachedCollector|null $collector Where to store the routes
+	 *
 	 * @return mixed|null
 	 * @throws \Psr\SimpleCache\InvalidArgumentException
 	 */
-	public static function build($key, RouteProvider $provider, ?CacheInterface $cache = null)
-	{
+	public static function build($key,
+								 RouteProvider $provider,
+								 ?CacheInterface $cache = null,
+								 ?CachedCollector $collector = null
+	) {
 		assert($key === self::NAMED_ROUTES || $key === self::DISPATCH_DATA);
 
 		$cache = $cache ?? (self::$cache ?? (self::$cache = new Memory()));
@@ -49,7 +54,7 @@ class Factory
 			return $data;
 		}
 
-		$collector = new CachedCollector(MiddlewareFactory::getResponseFactory());
+		$collector = $collector ?? new CachedCollector(MiddlewareFactory::getResponseFactory());
 		$provider->register(new Router($collector));
 
 		list($namedRoutes, $dispatchData) = $collector->build();
