@@ -27,7 +27,7 @@ class MiddlewareDispatcher
 	extends SlimMiddlewareDispatcher
 {
 	/**
-	 * @var array<string|callable|MiddlewareInterface> List of middleware to load from the container
+	 * @var array List of middleware to load from the container
 	 */
 	protected $middleware = [];
 

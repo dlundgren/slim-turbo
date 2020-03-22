@@ -42,10 +42,11 @@ class Factory
 	 * @return mixed|null
 	 * @throws \Psr\SimpleCache\InvalidArgumentException
 	 */
-	public static function build($key,
-								 RouteProvider $provider,
-								 ?CacheInterface $cache = null,
-								 ?CachedCollector $collector = null
+	public static function build(
+		$key,
+		RouteProvider $provider,
+		?CacheInterface $cache = null,
+		?CachedCollector $collector = null
 	) {
 		assert($key === self::NAMED_ROUTES || $key === self::DISPATCH_DATA);
 

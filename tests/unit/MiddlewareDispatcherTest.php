@@ -163,9 +163,10 @@ class MiddlewareDispatcherTest
 	{
 		$test = new class
 			implements MiddlewareInterface {
-			public function process(ServerRequestInterface $request,
-									RequestHandlerInterface $handler): ResponseInterface
-			{
+			public function process(
+				ServerRequestInterface $request,
+				RequestHandlerInterface $handler
+			): ResponseInterface {
 				return Factory::createResponse(222);
 			}
 		};
@@ -189,9 +190,10 @@ class MiddlewareDispatcherTest
 	{
 		$test = new class
 			implements MiddlewareInterface {
-			public function process(ServerRequestInterface $request,
-									RequestHandlerInterface $handler): ResponseInterface
-			{
+			public function process(
+				ServerRequestInterface $request,
+				RequestHandlerInterface $handler
+			): ResponseInterface {
 				return Factory::createResponse(222);
 			}
 		};
@@ -206,7 +208,7 @@ class MiddlewareDispatcherTest
 
 	public function testResolveMiddlewareHonorsCallable()
 	{
-		$test = function (...$args) use (&$routed){
+		$test = function (...$args) use (&$routed) {
 			return $routed = (new RoutedMiddleware())->withParameters($args);
 		};
 
