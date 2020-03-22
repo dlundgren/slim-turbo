@@ -59,29 +59,7 @@ class CachedCollector
 			return [$this->routes, $this->data];
 		}
 
-		$routes                  = [];
-		$routeDefinitionCallback = function (\FastRoute\RouteCollector $r) use (&$routes) {
-			foreach ($this->getRoutes() as $route) {
-				/** @var Route $route */
-				$id          = $route->getName() ?? $route->getIdentifier();
-				if (!($route instanceof Route)) {
-					// Interfaces are nice but in this case we must insist we have our own
-					throw new \RuntimeException("Route is not an instance of " . Route::class);
-				}
-
-				$routes[$id] = [
-					$route->getPattern(),
-					$route->getCallable(),
-					$route->getMiddleware(),
-				];
-
-				$r->addRoute($route->getMethods(), $route->getPattern(), $id);
-			}
-		};
-
-		$routeDefinitionCallback($routeCollector = $this->resolveFastRouteCollector());
-
-		$this->routes    = $routes;
+		$this->routes    = $this->generateRoutes($routeCollector = $this->resolveFastRouteCollector());
 		$this->data      = $routeCollector->getData();
 		$this->generated = true;
 
@@ -116,6 +94,41 @@ class CachedCollector
 		return $route;
 	}
 
+	/**
+	 * Generates the routes in FastRoute
+	 *
+	 * @param FastRouteCollector $routeCollector
+	 * @param array              $routes
+	 *
+	 * @return array List of routes that were generated
+	 */
+	protected function generateRoutes(\FastRoute\RouteCollector $routeCollector, array $routes = [])
+	{
+		foreach ($this->getRoutes() as $route) {
+			/** @var Route $route */
+			$id = $route->getName() ?? $route->getIdentifier();
+			if (!($route instanceof Route)) {
+				// Interfaces are nice but in this case we must insist we have our own
+				throw new \RuntimeException("Route is not an instance of " . Route::class);
+			}
+
+			$routeCollector->addRoute($route->getMethods(), $route->getPattern(), $id);
+
+			$routes[$id] = [
+				$route->getPattern(),
+				$route->getCallable(),
+				$route->getMiddleware(),
+			];
+		}
+
+		return $routes;
+	}
+
+	/**
+	 * DX to allow the collector to be changed without re-writing all the other methods.
+	 *
+	 * @return FastRouteCollector The FastRoute\RouteCollector instance
+	 */
 	protected function resolveFastRouteCollector(): FastRouteCollector
 	{
 		return new FastRouteCollector(new Std(), new GroupCountBased());
