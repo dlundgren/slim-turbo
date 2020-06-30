@@ -9,6 +9,7 @@ namespace Slim\Turbo\Routing;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Slim\Interfaces\RouteGroupInterface;
 use Slim\Interfaces\RouteInterface;
 use Slim\Interfaces\RouteParserInterface;
 use Slim\Routing\RouteParser;
@@ -73,6 +74,23 @@ class RouteCollector
 	}
 
 	/**
+	 * Overrides the parent to handle our customized RouteGroup and Router
+	 *
+	 * {@inheritDoc}
+	 */
+	public function group(string $pattern, $callable): RouteGroupInterface
+	{
+		$router              = new Router($this, $pattern);
+		$routeGroup          = new RouteGroup($pattern, $callable, $router);
+		$this->routeGroups[] = $routeGroup;
+
+		$routeGroup->collectRoutes();
+		array_pop($this->routeGroups);
+
+		return $routeGroup;
+	}
+
+	/**
 	 * Overrides the parent to change where the lookup for the route occurs
 	 *
 	 * {@inheritDoc}
@@ -111,6 +129,7 @@ class RouteCollector
 	 * @param string          $pattern
 	 * @param string|callable $callable
 	 * @param string|array    $middlewares
+	 *
 	 * @return Route
 	 */
 	protected function buildRoute(string $name, string $pattern, $callable, $middlewares): Route

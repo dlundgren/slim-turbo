@@ -4,6 +4,8 @@ namespace Slim\Turbo\Routing;
 
 use Middlewares\Utils\Factory;
 use PHPUnit\Framework\TestCase;
+use Slim\Routing\RouteResolver;
+use Slim\Routing\RoutingResults;
 
 class RouterTest
 	extends TestCase
@@ -35,6 +37,19 @@ class RouterTest
 		$rc    = $this->router->getRouteCollector();
 		$route = $rc->getNamedRoute('test1');
 
-		self::assertEquals('t/h', $route->getPattern());
+		self::assertEquals('/t/h', $route->getPattern());
+	}
+
+	public function testNestedGroups()
+	{
+		$this->router->group('test', function($router) {
+			$router->group('/nested', function ($router) {
+				$router->get('/group', 'dtest')->setName('dtest');
+			});
+		});
+
+		$resolver = new RouteResolver($this->router->getRouteCollector());
+		$result   = $resolver->computeRoutingResults('/test/nested/group', 'GET');
+		self::assertEquals(RoutingResults::FOUND, $result->getRouteStatus());
 	}
 }
