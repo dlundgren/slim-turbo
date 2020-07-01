@@ -66,7 +66,7 @@ class Route
 			$this->routeCollector->updateRouteName($this->name ?? $this->identifier, $name);
 		}
 
-		parent::setName($name);
+		$this->name = $this->identifier = $name;
 
 		return $this;
 	}

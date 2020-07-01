@@ -11,6 +11,12 @@ use DI\ContainerBuilder;
 use DI\Definition\Definition;
 use DI\Definition\Exception\InvalidDefinition;
 use DI\Definition\Source\DefinitionSource;
+use Psr\Http\Message\StreamFactoryInterface;
+use Slim\Middleware\ErrorMiddleware;
+use Slim\Middleware\OutputBufferingMiddleware;
+use Slim\Middleware\RoutingMiddleware;
+use Slim\Turbo\Middleware\DomainRouting;
+use Slim\Turbo\Routing\DomainResolver;
 use function DI\factory;
 use function DI\create;
 use function DI\get;
@@ -44,8 +50,15 @@ use Slim\Turbo\Routing\RouteRunner;
  */
 class PhpDi
 {
-	public static function definitions()
+	public static function definitions($useDomainRouting = false)
 	{
+		$routeResolverClass     = RouteResolver::class;
+		$routingMiddlewareClass = RoutingMiddleware::class;
+		if ($useDomainRouting) {
+			$routeResolverClass     = DomainResolver::class;
+			$routingMiddlewareClass = DomainRouting::class;
+		}
+
 		return array(
 			'app.middleware'                     => [],
 			RouteProvider::CACHE_KEY             => null,
@@ -83,7 +96,7 @@ class PhpDi
 				->constructor(
 					get(ContainerInterface::class)
 				),
-			RouteResolverInterface::class        => create(RouteResolver::class)
+			RouteResolverInterface::class        => create($routeResolverClass)
 				->constructor(
 					get(RouteCollectorInterface::class),
 					get(DispatcherInterface::class)
@@ -91,8 +104,23 @@ class PhpDi
 			RouteParserInterface::class          => create(RouteParser::class)
 				->constructor(
 					get(RouteCollectorInterface::class)
-				)
-			,
+				),
+
+			// slim middleware
+			ErrorMiddleware::class               => create(ErrorMiddleware::class)
+				->constructor(
+					get(CallableResolverInterface::class),
+					get(ResponseFactoryInterface::class)
+				),
+			OutputBufferingMiddleware::class     => create()
+				->constructor(
+					get(StreamFactoryInterface::class)
+				),
+			RoutingMiddleware::class             => create($routingMiddlewareClass)
+				->constructor(
+					get(RouteResolverInterface::class),
+					get(RouteParserInterface::class)
+				),
 
 			// slim app
 			App::class                           => create(App::class)

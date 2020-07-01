@@ -4,6 +4,7 @@ namespace Slim\Turbo\Routing;
 
 use Middlewares\Utils\Factory;
 use PHPUnit\Framework\TestCase;
+use Slim\CallableResolver;
 use Slim\Routing\RouteResolver;
 use Slim\Routing\RoutingResults;
 
@@ -42,14 +43,45 @@ class RouterTest
 
 	public function testNestedGroups()
 	{
-		$this->router->group('test', function($router) {
-			$router->group('/nested', function ($router) {
-				$router->get('/group', 'dtest')->setName('dtest');
-			});
-		});
+		$this->router->group(
+			'test',
+			function ($router) {
+				$router->group(
+					'/nested',
+					function ($router) {
+						$router->get('/group', 'dtest')->setName('dtest');
+					}
+				);
+			}
+		);
 
 		$resolver = new RouteResolver($this->router->getRouteCollector());
 		$result   = $resolver->computeRoutingResults('/test/nested/group', 'GET');
 		self::assertEquals(RoutingResults::FOUND, $result->getRouteStatus());
+	}
+
+	public function testDomainRouting()
+	{
+		$this->router->domain(
+			'api',
+			function ($router) {
+				$router->get('/test', 'api_test')->setName('api_test');
+			}
+		);
+		$rc    = $this->router->getRouteCollector();
+		$route = $rc->getNamedRoute('api_test');
+
+		self::assertEquals('api:/test', $route->getPattern());
+	}
+
+	public function testDomainRoutingThrowsExceptionWhenNotSupported()
+	{
+		$this->expectException(\RuntimeException::class);
+		$router = new Router(new \Slim\Routing\RouteCollector(Factory::getResponseFactory(), new CallableResolver()));
+		$router->domain(
+			'example.com',
+			function () {
+			}
+		);
 	}
 }

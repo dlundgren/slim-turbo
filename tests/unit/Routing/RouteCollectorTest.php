@@ -58,4 +58,28 @@ class RouteCollectorTest
 		$route = $this->rc->lookupRoute('mw');
 		self::assertEquals(['mw'], $route->getMiddleware());
 	}
+
+	public function testDomainRoutingThrowsExceptionWhenCalledUnderGroup()
+	{
+		$this->expectException(\RuntimeException::class);
+		$this->rc->group('throws', function ($router) {
+			$router->domain('example.com', function ($router) {
+				$router->get('test', 'dtest')->setName('dtest');
+			});
+		});
+		$this->rc->getNamedRoute('dtest');
+	}
+
+	public function xtestDomainRouting()
+	{
+		$this->rc->domain('example.com', function ($router) {
+			$router->group('throws', function ($router) {
+				$r = $router->get('test', 'dtest');
+				$r->setName('dtest');
+			});
+		});
+		var_dump($this->rc);
+		$route = $this->rc->getNamedRoute('dtest');
+		self::assertEquals('example.com:throws/test', $route->getPattern());
+	}
 }

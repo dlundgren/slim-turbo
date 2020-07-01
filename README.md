@@ -10,7 +10,7 @@ It's recommended to use [Slim](https://github.com/slimphp/Slim) without this pac
 It's recommended to use [Composer](https://getcomposer.org) to install Slim Turbo.
 
 ```bash
-$ composer require dlundgren/slim-turbo:^1.0
+$ composer require dlundgren/slim-turbo
 ```
 
 This will install Slim Turbo and all required dependencies. Like Slim, Slim Turbo requires PHP 7.1.
@@ -24,6 +24,28 @@ needed.
  
 **NOTE** Closures may be used with SlimTurbo, but it's recommended to only use them while in development. It is
 undefined behavior (from SlimTurbo's perspective) to use Closures in production.
+
+## Domain Routing
+
+Domain based routing is available by using `Router::domain($domain, $callable)`. This operates in a similar manner to
+how `Router::group($pattern, $callable)` works.
+
+There are a few options that you can provide to the `DomainResolver` when setting it up.
+
+| option           | default | description |
+| ---------------- | ------- | ----------- |
+| useSubdomainOnly | true    | strip off the domain portion |
+| ignoreHosts      | []      | List of hosts that should not be added to the route |
+
+### Using subdomain only
+
+This currently implements a very basic count of `.` and drops the parts near the last dot.
+
+Examples:
+```
+api.example.com > api
+api.service.example.com > api.service
+```
 
 ## Caching Routing information
 

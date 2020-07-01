@@ -34,6 +34,27 @@ class RouteCollector
 	}
 
 	/**
+	 * Overrides the parent to handle our customized RouteGroup and Router
+	 *
+	 * {@inheritDoc}
+	 */
+	public function domain(string $pattern, $callable): RouteGroupInterface
+	{
+		if (count($this->routeGroups)) {
+			throw new \RuntimeException("Domain routing cannot be set within groups");
+		}
+
+		$router              = new DomainRouter($this, $pattern);
+		$routeGroup          = new RouteGroup($pattern, $callable, $router);
+		$this->routeGroups[] = $routeGroup;
+
+		$routeGroup->collectRoutes();
+		array_pop($this->routeGroups);
+
+		return $routeGroup;
+	}
+
+	/**
 	 * Overrides the parent to lookup the route and build it if required
 	 *
 	 * {@inheritDoc}
@@ -105,21 +126,17 @@ class RouteCollector
 	}
 
 	/**
-	 * Overrides the parent createRoute so that we don't need a strategy, as route callables are MiddlewareInterface's
+	 * Changes the routes name in our array
 	 *
-	 * {@inheritDoc}
+	 * @param string $oldName The old name to change
+	 * @param string $newName The new name to set
 	 */
-	protected function createRoute(array $methods, string $pattern, $callable): RouteInterface
+	public function updateRouteName($oldName, $newName)
 	{
-		return new Route(
-			$methods,
-			$pattern,
-			$callable,
-			$this->responseFactory,
-			$this->container,
-			$this->routeGroups,
-			$this->routeCounter
-		);
+		if ($oldName !== $newName && isset($this->routes[$oldName])) {
+			$this->routes[$newName] = $this->routes[$oldName];
+			unset($this->routes[$oldName]);
+		}
 	}
 
 	/**
@@ -142,6 +159,27 @@ class RouteCollector
 				$route->add($middleware);
 			}
 		}
+
+		return $route;
+	}
+
+	/**
+	 * Overrides the parent createRoute so that we don't need a strategy, as route callables are MiddlewareInterface's
+	 *
+	 * {@inheritDoc}
+	 */
+	protected function createRoute(array $methods, string $pattern, $callable): RouteInterface
+	{
+		$route = new Route(
+			$methods,
+			$pattern,
+			$callable,
+			$this->responseFactory,
+			$this->container,
+			$this->routeGroups,
+			$this->routeCounter
+		);
+		$route->watchNameChange($this);
 
 		return $route;
 	}

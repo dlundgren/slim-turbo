@@ -24,11 +24,13 @@ use Slim\Middleware\RoutingMiddleware;
 use Slim\Routing\FastRouteDispatcher as SlimFastRouteDispatcher;
 use Slim\Routing\RouteParser;
 use Slim\Routing\RouteResolver;
+use Slim\Turbo\Middleware\DomainRouting;
 use Slim\Turbo\NullResolver;
 use Slim\Turbo\MiddlewareDispatcher;
 use Slim\Turbo\Routing\Cache\Factory as RouteCacheFactory;
 use Slim\Turbo\Routing\Cache\Memory;
 use Slim\Turbo\Routing\Dispatcher;
+use Slim\Turbo\Routing\DomainResolver;
 use Slim\Turbo\Routing\RouteCollector;
 use Slim\Interfaces\CallableResolverInterface;
 use Slim\Interfaces\DispatcherInterface;
@@ -49,9 +51,10 @@ use Symfony\Component\DependencyInjection\Reference;
 class Symfony
 	implements ExtensionInterface
 {
-	const ALIAS        = 'slim_turbo';
-	const CACHE_KEY    = 'route_cache';
-	const PROVIDER_KEY = 'route_provider';
+	const ALIAS                    = 'slim_turbo';
+	const CACHE_KEY                = 'route_cache';
+	const PROVIDER_KEY             = 'route_provider';
+	const DOMAIN_ROUTING_PARAMETER = 'routing.allow_domains';
 
 	public function load(array $configs, ContainerBuilder $container)
 	{
@@ -97,6 +100,13 @@ class Symfony
 
 	public static function register(ContainerBuilder $builder)
 	{
+		$routeResolverClass     = RouteResolver::class;
+		$routingMiddlewareClass = RoutingMiddleware::class;
+		if ($builder->hasParameter(self::DOMAIN_ROUTING_PARAMETER)) {
+			$routeResolverClass     = DomainResolver::class;
+			$routingMiddlewareClass = DomainRouting::class;
+		}
+
 		$builder->setParameter('app.middleware', []);
 		$containerReference = new Reference(ContainerInterface::class);
 
@@ -163,7 +173,7 @@ class Symfony
 				);
 		$builder->register(RouteRunner::class)
 				->setArgument('$container', $containerReference);
-		$builder->register(RouteResolverInterface::class, RouteResolver::class)
+		$builder->register(RouteResolverInterface::class, $routeResolverClass)
 				->setArguments(
 					[
 						'$routeCollector' => new Reference(RouteCollectorInterface::class),
@@ -206,7 +216,7 @@ class Symfony
 					]
 				)
 				->setPublic(true);
-		$builder->register(RoutingMiddleware::class)
+		$builder->register(RoutingMiddleware::class, $routingMiddlewareClass)
 				->setArguments(
 					[
 						'$routeResolver' => new Reference(RouteResolverInterface::class),

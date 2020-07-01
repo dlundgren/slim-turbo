@@ -4,6 +4,8 @@ namespace Slim\Turbo\Provider;
 
 use PHPUnit\Framework\TestCase;
 use Slim\App;
+use Slim\Middleware\RoutingMiddleware;
+use Slim\Turbo\Middleware\DomainRouting;
 use Slim\Turbo\Test\Cachier;
 use Slim\Turbo\Test\Routes;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -46,5 +48,18 @@ class SymfonyTest
 		$builder->compile();
 
 		self::assertInstanceOf(App::class, $builder->get(App::class));
+	}
+
+	public function testRegistersDomainRouting()
+	{
+		$builder = new ContainerBuilder();
+		$builder->registerExtension($ext = new Symfony());
+		$builder->loadFromExtension($ext->getAlias(), ['route_cache' => Cachier::class]);
+		$builder->setParameter(Symfony::DOMAIN_ROUTING_PARAMETER, true);
+		$builder->register(RouteProvider::class, Routes::class);
+		$builder->register(Cachier::class);
+		$builder->compile();
+
+		self::assertInstanceOf(DomainRouting::class, $builder->get(RoutingMiddleware::class));
 	}
 }
