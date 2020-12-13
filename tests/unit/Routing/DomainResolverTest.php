@@ -84,4 +84,24 @@ class DomainResolverTest
 
 		return [$resolver, $resolver->resolveRouteFromUri($request->getUri(), 'GET')];
 	}
+
+	public function testLocalhostIsIgnoredByDefault()
+	{
+		$resolver = new DomainResolver($this->routeCollector);
+		$request  = Factory::createServerRequest('GET', '/v1');
+		$request  = $request->withUri($request->getUri()->withHost('localhost'));
+
+		$result = $resolver->resolveRouteFromUri($request->getUri(), 'GET');
+		self::assertEquals(RoutingResults::FOUND, $result->getRouteStatus());
+	}
+
+	public function testLocalhostIsNotIgnoredUnlessSpecified()
+	{
+		$resolver = new DomainResolver($this->routeCollector, null, true, []);
+		$request  = Factory::createServerRequest('GET', '/v1');
+		$request  = $request->withUri($request->getUri()->withHost('localhost'));
+
+		$result = $resolver->resolveRouteFromUri($request->getUri(), 'GET');
+		self::assertEquals(RoutingResults::NOT_FOUND, $result->getRouteStatus());
+	}
 }

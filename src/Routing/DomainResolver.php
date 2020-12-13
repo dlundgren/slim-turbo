@@ -17,6 +17,10 @@ use Slim\Routing\RoutingResults;
 class DomainResolver
 	implements RouteResolverInterface
 {
+	const DEFAULT_IGNORED_DOMAINS = [
+		'localhost'
+	];
+
 	/**
 	 * @var bool Strips the domain to only route on subdomains
 	 */
@@ -47,7 +51,7 @@ class DomainResolver
 		RouteCollectorInterface $routeCollector,
 		?DispatcherInterface $dispatcher = null,
 		bool $useSubdomainOnly = true,
-		array $ignoreHosts = []
+		array $ignoreHosts = self::DEFAULT_IGNORED_DOMAINS
 	) {
 		$this->routeCollector   = $routeCollector;
 		$this->dispatcher       = $dispatcher ?? new \Slim\Routing\Dispatcher($routeCollector);
