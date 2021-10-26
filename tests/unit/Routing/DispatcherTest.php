@@ -10,7 +10,7 @@ use Slim\Routing\RoutingResults;
 class DispatcherTest
 	extends TestCase
 {
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->rc = new RouteCollector(Factory::getResponseFactory());
 	}

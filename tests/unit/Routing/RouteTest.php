@@ -12,7 +12,7 @@ use Slim\Turbo\Test\TestController;
 class RouteTest
 	extends TestCase
 {
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->di = new Container();
 		$this->di->set('test', new TestController());

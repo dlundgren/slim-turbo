@@ -10,7 +10,7 @@ use Slim\Turbo\Routing\CachedCollector;
 class FactoryTest
 	extends TestCase
 {
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->provider = new class
 			implements RouteProvider

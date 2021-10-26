@@ -5,4 +5,4 @@ parameters:
 		- '#::__construct\(\) does not call parent constructor#'
 		- '#Cannot call method (has|get)\(\) on Psr\\Container\\ContainerInterface\|null\.#'
 		- '#Psr\\SimpleCache\\InvalidArgumentException is not subtype of Throwable#'
-		- '#Call to an undefined method Slim\\MiddlewareDispatcher::getMiddleware()#'
+		- '#Call to an undefined method Slim\\MiddlewareDispatcher::getMiddleware\(\)#'

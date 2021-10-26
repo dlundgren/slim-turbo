@@ -11,7 +11,7 @@ class DomainResolverTest
 {
 	protected $routeCollector;
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->router = new Router(
 			$this->routeCollector = new CachedCollector(Factory::getResponseFactory()),

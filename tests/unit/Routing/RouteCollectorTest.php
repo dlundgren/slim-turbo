@@ -14,7 +14,7 @@ class RouteCollectorTest
 	 */
 	protected $rc;
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->rc = new RouteCollector(
 			Factory::getResponseFactory(),

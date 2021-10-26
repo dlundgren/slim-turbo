@@ -8,7 +8,7 @@ use PHPStan\Testing\TestCase;
 class CachedCollectorTest
 	extends TestCase
 {
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->collector = new CachedCollector(Factory::getResponseFactory());
 		$this->collector->map(['GET'], '/1', 'test1')->setName('test1');

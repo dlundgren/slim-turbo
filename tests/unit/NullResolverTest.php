@@ -9,7 +9,7 @@ class NullResolverTest
 {
 	protected $resolver;
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->resolver = new NullResolver();
 	}

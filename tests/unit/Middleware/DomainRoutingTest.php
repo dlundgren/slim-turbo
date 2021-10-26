@@ -7,13 +7,11 @@ use PHPStan\Testing\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
-use Slim\Interfaces\RouteCollectorProxyInterface;
 use Slim\Interfaces\RouteParserInterface;
 use Slim\Routing\RouteContext;
 use Slim\Routing\RoutingResults;
 use Slim\Turbo\Routing\Dispatcher;
 use Slim\Turbo\Routing\DomainResolver;
-use Slim\Turbo\Routing\Route;
 
 class DomainRoutingTest
 	extends TestCase

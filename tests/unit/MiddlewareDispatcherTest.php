@@ -20,7 +20,7 @@ class MiddlewareDispatcherTest
 {
 	const DEFAULT_TEST_STATUS_CODE = 200;
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->di = new Container();
 

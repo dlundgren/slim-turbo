@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 class MemoryTest
 	extends TestCase
 {
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->cache = new Memory();
 	}
