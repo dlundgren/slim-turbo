@@ -3,7 +3,7 @@
 namespace Slim\Turbo\Routing;
 
 use Middlewares\Utils\Factory;
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class CachedCollectorTest
 	extends TestCase

@@ -3,7 +3,7 @@
 namespace Slim\Turbo\Middleware;
 
 use Middlewares\Utils\Factory;
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
