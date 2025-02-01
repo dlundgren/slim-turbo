@@ -29,7 +29,7 @@
         "cache/simple-cache-bridge": "^1.0",
         "guzzlehttp/psr7": "^2.0",
         "http-interop/http-factory-guzzle": "^1.0",
-        "laminas/laminas-diactoros": "^2.1",
+        "laminas/laminas-diactoros": "^3.5",
         "nyholm/psr7": "^1.1",
         "nyholm/psr7-server": "^1.0",
         "php-di/php-di": "^6.0",
