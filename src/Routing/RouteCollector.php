@@ -83,7 +83,7 @@ class RouteCollector
 	 */
 	public function getRouteParser(): RouteParserInterface
 	{
-		if ($this->routeParser) {
+		if (isset($this->routeParser)) {
 			return $this->routeParser;
 		}
 

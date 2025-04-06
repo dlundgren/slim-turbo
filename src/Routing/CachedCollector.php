@@ -43,7 +43,7 @@ class CachedCollector
 	/**
 	 * @var array<string, array<int, array|callable|string>>
 	 */
-	protected $routes;
+	protected array $routes;
 
 	public function __construct(ResponseFactoryInterface $responseFactory)
 	{

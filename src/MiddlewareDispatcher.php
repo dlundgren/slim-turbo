@@ -7,6 +7,7 @@
 
 namespace Slim\Turbo;
 
+use Closure;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,7 +28,7 @@ class MiddlewareDispatcher
 	extends SlimMiddlewareDispatcher
 {
 	/**
-	 * @var array List of middleware to load from the container
+	 * @var array<callable|Closure|MiddlewareInterface|string> List of middleware to load from the container
 	 */
 	protected $middleware = [];
 
@@ -64,7 +65,7 @@ class MiddlewareDispatcher
 	}
 
 	/**
-	 * @return array Returns the list of currently set middleware
+	 * @return array<callable|MiddlewareInterface|string> Returns the list of currently set middleware
 	 */
 	public function getMiddleware()
 	{
@@ -77,6 +78,7 @@ class MiddlewareDispatcher
 	 * NOTE: Unlike the parent this does not resolve the middleware when called
 	 *
 	 * {@inheritDoc}
+	 * @param mixed $params
 	 */
 	public function add($middleware, ...$params): MiddlewareDispatcherInterface
 	{
@@ -113,7 +115,7 @@ class MiddlewareDispatcher
 	/**
 	 * Returns the resolve middleware
 	 *
-	 * @param string|MiddlewareInterface|callable|array $middleware The middleware to resolve
+	 * @param string|MiddlewareInterface|callable|array<mixed> $middleware The middleware to resolve
 	 *
 	 * @return callable|MiddlewareInterface
 	 */

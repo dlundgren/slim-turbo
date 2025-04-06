@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Interfaces\RouteParserInterface;
+use Slim\Interfaces\RouteResolverInterface;
 use Slim\Middleware\RoutingMiddleware;
 use Slim\Routing\RouteContext;
 use Slim\Routing\RoutingResults;
@@ -30,7 +31,7 @@ class DomainRouting
 	/**
 	 * @var DomainResolver
 	 */
-	protected $routeResolver;
+	protected RouteResolverInterface $routeResolver;
 
 	/**
 	 * @param DomainResolver       $routeResolver
