@@ -3,6 +3,7 @@
 namespace Slim\Turbo\Middleware;
 
 use Middlewares\Utils\Factory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
@@ -16,7 +17,7 @@ use Slim\Turbo\Routing\DomainResolver;
 class DomainRoutingTest
 	extends TestCase
 {
-	public function provideExceptionPayloads()
+	public static function provideExceptionPayloads(): array
 	{
 		return [
 			[\RuntimeException::class, -1],
@@ -24,9 +25,7 @@ class DomainRoutingTest
 		];
 	}
 
-	/**
-	 * @dataProvider provideExceptionPayloads
-	 */
+	#[DataProvider('provideExceptionPayloads')]
 	public function testPerformRoutingThrowsException($exceptionClass, $routingStatus)
 	{
 		$dr = $this->getMockBuilder(DomainResolver::class)->disableOriginalConstructor()->getMock();

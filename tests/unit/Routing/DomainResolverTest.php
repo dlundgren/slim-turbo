@@ -3,6 +3,7 @@
 namespace Slim\Turbo\Routing;
 
 use Middlewares\Utils\Factory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Slim\Routing\RoutingResults;
 
@@ -47,7 +48,7 @@ class DomainResolverTest
 		self::assertEquals('full-v1', $resolver->resolveRoute($result->getRouteIdentifier())->getName());
 	}
 
-	public function provideIgnoredHostPayload()
+	public static function provideIgnoredHostPayload()
 	{
 		return [
 			['example.com'],
@@ -55,9 +56,8 @@ class DomainResolverTest
 			['api.example.com']
 		];
 	}
-	/**
-	 * @dataProvider provideIgnoredHostPayload
-	 */
+
+	#[DataProvider('provideIgnoredHostPayload')]
 	public function testResolveRouteFromUriWithIgnoredHost($host)
 	{
 		$resolver = new DomainResolver($this->routeCollector, null, true, ['api.example.com']);

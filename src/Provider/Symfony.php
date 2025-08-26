@@ -100,6 +100,13 @@ class Symfony
 
 	public static function register(ContainerBuilder $builder)
 	{
+		$containerReference = new Reference(
+			// someone in Symfony thought it would be funny to remove the Container definition/alias in 6.x
+			$builder->has(ContainerInterface::class)
+				? ContainerInterface::class
+				: 'service_container'
+		);
+
 		$routeResolverClass     = RouteResolver::class;
 		$routingMiddlewareClass = RoutingMiddleware::class;
 		if ($builder->hasParameter(self::DOMAIN_ROUTING_PARAMETER)) {
@@ -108,8 +115,6 @@ class Symfony
 		}
 
 		$builder->setParameter('app.middleware', []);
-		$containerReference = new Reference(ContainerInterface::class);
-
 		$builder->register(RouteProvider::CACHE_KEY)->setSynthetic(true);
 		$builder->register(RouteProvider::NAMED_ROUTE_KEY)
 				->setClass(\stdClass::class)
@@ -147,7 +152,7 @@ class Symfony
 				->setArguments(
 					[
 						'$responseFactory' => new Reference(ResponseFactoryInterface::class),
-						'$container'       => new Reference($containerReference),
+						'$container'       => $containerReference,
 						'$routes'          => new Reference(RouteProvider::NAMED_ROUTE_KEY)
 					]
 				);
@@ -188,7 +193,7 @@ class Symfony
 				->setArguments(
 					[
 						'$responseFactory'      => new Reference(ResponseFactoryInterface::class),
-						'$container'            => new Reference(ContainerInterface::class),
+						'$container'            => $containerReference,
 						'$callableResolver'     => new Reference(CallableResolverInterface::class),
 						'$routeCollector'       => new Reference(RouteCollectorInterface::class),
 						'$routeResolver'        => new Reference(RouteResolverInterface::class),
