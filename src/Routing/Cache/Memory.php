@@ -12,7 +12,7 @@ use Psr\SimpleCache\CacheInterface;
 /**
  * SimpleCache memory based caching
  *
- * @NOTE This is implement here so as to prevent the need for another dependency
+ * @NOTE This is implemented here to prevent the need for another dependency
  *
  * @package Slim\Turbo\Provider
  */

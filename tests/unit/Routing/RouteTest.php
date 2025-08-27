@@ -12,7 +12,11 @@ use Slim\Turbo\Test\TestController;
 class RouteTest
 	extends TestCase
 {
-	public function setUp(): void
+	protected $di;
+
+	protected $route;
+
+	protected function setUp(): void
 	{
 		$this->di = new Container();
 		$this->di->set('test', new TestController());
@@ -44,9 +48,7 @@ class RouteTest
 
 	public function testHandleConvertsCallable()
 	{
-		$call  = function () {
-			return Factory::createResponse(333);
-		};
+		$call  = fn() => Factory::createResponse(333);
 		$route = new Route(['GET'], 't', $call, Factory::getResponseFactory(), $this->di);
 
 		self::assertEquals(333, $route->handle(Factory::createServerRequest('GET', '/'))->getStatusCode());

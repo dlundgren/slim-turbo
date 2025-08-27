@@ -13,9 +13,10 @@ class ContainerResolverTest
 	 * @var Container
 	 */
 	protected $container;
+
 	protected $resolver;
 
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		$this->container = new Container();
 		$this->resolver  = new ContainerResolver($this->container);

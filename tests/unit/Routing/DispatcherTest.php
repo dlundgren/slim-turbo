@@ -10,7 +10,9 @@ use Slim\Routing\RoutingResults;
 class DispatcherTest
 	extends TestCase
 {
-	public function setUp(): void
+	protected RouteCollector $rc;
+
+	protected function setUp(): void
 	{
 		$this->rc = new RouteCollector(Factory::getResponseFactory());
 	}
@@ -18,8 +20,8 @@ class DispatcherTest
 	public function testDispatch()
 	{
 		$frd = $this->getMockBuilder(FastRouteDispatcher::class)
-					->disableOriginalConstructor()
-					->getMock();
+		            ->disableOriginalConstructor()
+		            ->getMock();
 		$frd->expects($this->once())->method('dispatch')->willReturn([FastRouteDispatcher::NOT_FOUND, 't1', ['t2']]);
 
 		$d       = new Dispatcher($this->rc, $frd);
@@ -31,8 +33,8 @@ class DispatcherTest
 	public function testGetAllowedMethods()
 	{
 		$frd = $this->getMockBuilder(FastRouteDispatcher::class)
-					->disableOriginalConstructor()
-					->getMock();
+		            ->disableOriginalConstructor()
+		            ->getMock();
 		$frd->expects($this->once())->method('getAllowedMethods')->willReturn(['TEST']);
 
 		self::assertEquals(['TEST'], (new Dispatcher($this->rc, $frd))->getAllowedMethods('/'));

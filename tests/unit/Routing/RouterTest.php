@@ -16,7 +16,7 @@ class RouterTest
 	 */
 	protected $router;
 
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		$this->router = new Router(
 			new CachedCollector(Factory::getResponseFactory()),

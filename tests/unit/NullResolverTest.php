@@ -3,13 +3,14 @@
 namespace Slim\Turbo;
 
 use PHPUnit\Framework\TestCase;
+use Slim\Interfaces\CallableResolverInterface;
 
 class NullResolverTest
 	extends TestCase
 {
-	protected $resolver;
+	protected CallableResolverInterface $resolver;
 
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		$this->resolver = new NullResolver();
 	}

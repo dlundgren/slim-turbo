@@ -13,7 +13,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class SymfonyTest
 	extends TestCase
 {
-	public function setUp(): void
+	protected ContainerBuilder $builder;
+
+	protected function setUp(): void
 	{
 		$this->builder = new ContainerBuilder();
 		$this->builder->registerExtension($ext = new Symfony());

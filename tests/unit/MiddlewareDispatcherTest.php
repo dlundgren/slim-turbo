@@ -5,6 +5,7 @@ namespace Slim\Turbo;
 use DI\Container;
 use Middlewares\Utils\Factory;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -20,7 +21,11 @@ class MiddlewareDispatcherTest
 {
 	const DEFAULT_TEST_STATUS_CODE = 200;
 
-	public function setUp(): void
+	protected ContainerInterface $di;
+
+	protected MiddlewareDispatcher $dispatcher;
+
+	protected function setUp(): void
 	{
 		$this->di = new Container();
 
@@ -65,9 +70,7 @@ class MiddlewareDispatcherTest
 
 	public function buildContainer()
 	{
-		$container = new Container();
-
-		return $container;
+		return new Container();
 	}
 
 	public function testFromConstructor()
@@ -150,9 +153,7 @@ class MiddlewareDispatcherTest
 
 	public function testHandlesCallableForDevelopment()
 	{
-		$test = function () {
-			return Factory::createResponse(222);
-		};
+		$test = fn() => Factory::createResponse(222);
 
 		$this->dispatcher->add($test);
 

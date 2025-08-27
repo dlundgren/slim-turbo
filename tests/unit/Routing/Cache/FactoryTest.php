@@ -10,12 +10,14 @@ use Slim\Turbo\Routing\CachedCollector;
 class FactoryTest
 	extends TestCase
 {
-	public function setUp(): void
+	protected $provider;
+
+	protected function setUp(): void
 	{
 		$this->provider = new class
-			implements RouteProvider
-		{
+			implements RouteProvider {
 			public $added = 0;
+
 			protected $routes = [
 				['/', 'test']
 			];
@@ -64,7 +66,7 @@ class FactoryTest
 	public function testBuildUsesProvidedCacheCollector()
 	{
 		$collector = $this->createMock(CachedCollector::class);
-		$collector->expects($this->once())->method('build')->willReturn([[],[]]);
+		$collector->expects($this->once())->method('build')->willReturn([[], []]);
 
 		Factory::build(Factory::NAMED_ROUTES, $this->provider, new Memory, $collector);
 	}

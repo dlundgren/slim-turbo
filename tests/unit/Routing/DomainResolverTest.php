@@ -5,14 +5,17 @@ namespace Slim\Turbo\Routing;
 use Middlewares\Utils\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Routing\RoutingResults;
 
 class DomainResolverTest
 	extends TestCase
 {
-	protected $routeCollector;
+	protected Router $router;
 
-	public function setUp(): void
+	protected RouteCollectorInterface $routeCollector;
+
+	protected function setUp(): void
 	{
 		$this->router = new Router(
 			$this->routeCollector = new CachedCollector(Factory::getResponseFactory()),
@@ -36,14 +39,14 @@ class DomainResolverTest
 
 	public function testResolveRouteFromUri()
 	{
-		list($resolver, $result) = $this->runResolverWithArgs($this->routeCollector);
+		[$resolver, $result] = $this->runResolverWithArgs($this->routeCollector);
 		self::assertEquals(RoutingResults::FOUND, $result->getRouteStatus());
 		self::assertEquals('sub-v1', $resolver->resolveRoute($result->getRouteIdentifier())->getName());
 	}
 
 	public function testResolveRouteFromUriWithFullDomain()
 	{
-		list($resolver, $result) = $this->runResolverWithArgs($this->routeCollector, null, false);
+		[$resolver, $result] = $this->runResolverWithArgs($this->routeCollector, null, false);
 		self::assertEquals(RoutingResults::FOUND, $result->getRouteStatus());
 		self::assertEquals('full-v1', $resolver->resolveRoute($result->getRouteIdentifier())->getName());
 	}
@@ -71,7 +74,7 @@ class DomainResolverTest
 	public function testComputeRoutingResultsWithoutStartingSlash()
 	{
 		$resolver = new DomainResolver($this->routeCollector);
-		$result = $resolver->computeRoutingResults('v1', 'GET');
+		$result   = $resolver->computeRoutingResults('v1', 'GET');
 		self::assertEquals(RoutingResults::FOUND, $result->getRouteStatus());
 		self::assertEquals('main-v1', $resolver->resolveRoute($result->getRouteIdentifier())->getName());
 	}

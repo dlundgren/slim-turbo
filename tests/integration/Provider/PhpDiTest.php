@@ -13,6 +13,8 @@ use Slim\Turbo\Test\Routes;
 class PhpDiTest
 	extends TestCase
 {
+	protected ContainerBuilder $builder;
+
 	public function testRegisterSlimProperly()
 	{
 		$builder = new ContainerBuilder();
