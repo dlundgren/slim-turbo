@@ -3,10 +3,13 @@
 namespace Slim\Turbo\Routing\Cache;
 
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\CacheInterface;
 
 class MemoryTest
 	extends TestCase
 {
+	protected CacheInterface $cache;
+
 	public function setUp(): void
 	{
 		$this->cache = new Memory();
