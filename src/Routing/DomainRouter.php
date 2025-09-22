@@ -28,11 +28,12 @@ class DomainRouter
 	/**
 	 * {@inheritdoc}
 	 */
+	#[\Override]
 	public function map(array $methods, string $pattern, $callable): RouteInterface
 	{
 		return $this->routeCollector->map(
 			$methods,
-			($this->groupPattern ? "{$this->groupPattern}:" : "") . $pattern,
+			($this->groupPattern !== '' ? "{$this->groupPattern}:" : "") . $pattern,
 			$callable
 		);
 	}
@@ -40,10 +41,11 @@ class DomainRouter
 	/**
 	 * {@inheritdoc}
 	 */
+	#[\Override]
 	public function group(string $pattern, $callable): RouteGroupInterface
 	{
 		return $this->routeCollector->group(
-			($this->groupPattern ? "{$this->groupPattern}:" : "") . $pattern,
+			($this->groupPattern !== '' ? "{$this->groupPattern}:" : "") . $pattern,
 			$callable
 		);
 	}

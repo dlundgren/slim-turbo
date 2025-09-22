@@ -33,16 +33,13 @@ class DomainRouting
 	 */
 	protected RouteResolverInterface $routeResolver;
 
-	/**
-	 * @param DomainResolver       $routeResolver
-	 * @param RouteParserInterface $routeParser
-	 */
 	public function __construct(DomainResolver $routeResolver, RouteParserInterface $routeParser)
 	{
 		$this->routeResolver = $routeResolver;
 		$this->routeParser   = $routeParser;
 	}
 
+	#[\Override]
 	public function performRouting(ServerRequestInterface $request): ServerRequestInterface
 	{
 		$routingResults = $this->routeResolver->resolveRouteFromUri(

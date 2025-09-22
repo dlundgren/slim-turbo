@@ -23,7 +23,6 @@ interface RouteProvider
 	/**
 	 * Registers the routes with the router
 	 *
-	 * @param RouteCollectorProxyInterface $router
 	 * @return mixed
 	 */
 	public function register(RouteCollectorProxyInterface $router);

@@ -20,8 +20,6 @@ interface ParameterAware
 	 * The parameters that are to be stored in a cloned instance of the middleware
 	 *
 	 * @param mixed $parameters Parameters to store, by default this is an array
-	 *
-	 * @return MiddlewareInterface
 	 */
 	public function withParameters($parameters): MiddlewareInterface;
 

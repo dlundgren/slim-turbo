@@ -26,19 +26,14 @@ class CachedCollector
 	const DISPATCH_DATA_KEY = 'routing.dispatch_data';
 
 	/**
-	 * @var bool Whether or not the routes have been generated yet
+	 * @var bool Whether the routes have been generated yet
 	 */
 	protected $generated = false;
 
 	/**
-	 * @var CacheInterface
-	 */
-	protected $cache;
-
-	/**
 	 * @var array Cache of currently built routes
 	 */
-	protected $data;
+	protected array $data;
 
 	/**
 	 * @var array<string, array<int, array|callable|string>>
@@ -68,9 +63,6 @@ class CachedCollector
 
 	/**
 	 * Generates the routes in FastRoute
-	 *
-	 * @param FastRouteCollector $routeCollector
-	 * @param array              $routes
 	 *
 	 * @return array List of routes that were generated
 	 */

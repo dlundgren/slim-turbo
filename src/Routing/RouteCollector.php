@@ -19,9 +19,9 @@ class RouteCollector
 	extends \Slim\Routing\RouteCollector
 {
 	/**
-	 * @var array List of cached routes
+	 * @var mixed[] List of cached routes
 	 */
-	protected $cache = [];
+	protected array $cache = [];
 
 	public function __construct(
 		ResponseFactoryInterface $responseFactory,
@@ -55,10 +55,11 @@ class RouteCollector
 	}
 
 	/**
-	 * Overrides the parent to lookup the route and build it if required
+	 * Overrides the parent to look up the route and build it if required
 	 *
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function getNamedRoute(string $name): RouteInterface
 	{
 		if (isset($this->routes[$name])) {
@@ -81,17 +82,18 @@ class RouteCollector
 	 *
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function getRouteParser(): RouteParserInterface
 	{
 		if (isset($this->routeParser)) {
 			return $this->routeParser;
 		}
 
-		if ($this->container && $this->container->has(RouteParserInterface::class)) {
+		if ($this->container?->has(RouteParserInterface::class)) {
 			$this->routeParser = $this->container->get(RouteParserInterface::class);
 		}
 
-		return $this->routeParser ?? ($this->routeParser = new RouteParser($this));
+		return $this->routeParser ??= new RouteParser($this);
 	}
 
 	/**
@@ -99,6 +101,7 @@ class RouteCollector
 	 *
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function group(string $pattern, $callable): RouteGroupInterface
 	{
 		$router              = new Router($this, $pattern);
@@ -116,6 +119,7 @@ class RouteCollector
 	 *
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function lookupRoute(string $identifier): RouteInterface
 	{
 		if (!isset($this->routes[$identifier])) {
@@ -142,12 +146,8 @@ class RouteCollector
 	/**
 	 * Builds our custom Route object
 	 *
-	 * @param string          $name
-	 * @param string          $pattern
 	 * @param string|callable $callable
 	 * @param string|array    $middlewares
-	 *
-	 * @return Route
 	 */
 	protected function buildRoute(string $name, string $pattern, $callable, $middlewares): Route
 	{
@@ -168,6 +168,7 @@ class RouteCollector
 	 *
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	protected function createRoute(array $methods, string $pattern, $callable): RouteInterface
 	{
 		$route = new Route(

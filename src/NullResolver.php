@@ -28,7 +28,7 @@ class NullResolver
 	 *
 	 * @throws \RuntimeException
 	 */
-	public function __invoke()
+	public function __invoke(): never
 	{
 		throw new \RuntimeException("Please use " . MiddlewareInterface::class . " instances");
 	}

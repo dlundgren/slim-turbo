@@ -26,10 +26,7 @@ use Slim\Turbo\MiddlewareDispatcher;
 class Route
 	extends \Slim\Routing\Route
 {
-	/**
-	 * @var RouteCollector
-	 */
-	protected $routeCollector;
+	protected RouteCollector $routeCollector;
 
 	public function __construct(
 		array $methods,
@@ -60,11 +57,10 @@ class Route
 	 *
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function setName(string $name): RouteInterface
 	{
-		if (isset($this->routeCollector)) {
-			$this->routeCollector->updateRouteName($this->name ?? $this->identifier, $name);
-		}
+		$this->routeCollector?->updateRouteName($this->name ?? $this->identifier, $name);
 
 		$this->name = $this->identifier = $name;
 
@@ -88,10 +84,9 @@ class Route
 	}
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @return ResponseInterface
 	 * @throws HttpInternalServerErrorException
 	 */
+	#[\Override]
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
 		$this->middlewareDispatcher->seedMiddlewareStack(
@@ -108,6 +103,7 @@ class Route
 	 *
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function run(ServerRequestInterface $request): ResponseInterface
 	{
 		return $this->handle($request);
@@ -117,6 +113,7 @@ class Route
 	 * Overrides the parent to allow extra parameters
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function add($middleware, ...$params): RouteInterface
 	{
 		$this->middlewareDispatcher->add($middleware, ...$params);

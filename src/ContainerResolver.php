@@ -38,9 +38,6 @@ class ContainerResolver
 	 */
 	protected $resolved;
 
-	/**
-	 * @param ContainerInterface $container
-	 */
 	public function __construct(ContainerInterface $container)
 	{
 		$this->container = $container;
@@ -62,7 +59,7 @@ class ContainerResolver
 		return $this;
 	}
 
-	public function __invoke()
+	public function __invoke(): never
 	{
 		throw new \RuntimeException("Please use " . MiddlewareInterface::class . " instances");
 	}

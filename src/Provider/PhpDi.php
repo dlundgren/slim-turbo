@@ -59,19 +59,19 @@ class PhpDi
 			$routingMiddlewareClass = DomainRouting::class;
 		}
 
-		return array(
+		return [
 			'app.middleware'                     => [],
 			RouteProvider::CACHE_KEY             => null,
-			RouteProvider::NAMED_ROUTE_KEY       => factory([RoutingCache\Factory::class, 'build'])
+			RouteProvider::NAMED_ROUTE_KEY       => factory(RoutingCache\Factory::build(...))
 				->parameter('key', RoutingCache\Factory::NAMED_ROUTES)
 				->parameter('cache', get(RouteProvider::CACHE_KEY))
 				->parameter('provider', get(RouteProvider::class))
 			,
-			RouteProvider::DISPATCH_DATA_KEY     => factory([RoutingCache\Factory::class, 'build'])
+			RouteProvider::DISPATCH_DATA_KEY     => factory(RoutingCache\Factory::build(...))
 				->parameter('key', RoutingCache\Factory::DISPATCH_DATA)
 				->parameter('cache', get(RouteProvider::CACHE_KEY))
 				->parameter('provider', get(RouteProvider::class)),
-			ResponseFactoryInterface::class      => factory([Factory::class, 'getResponseFactory']),
+			ResponseFactoryInterface::class      => factory(Factory::getResponseFactory(...)),
 			CallableResolverInterface::class     => create(NullResolver::class),
 			// convert this to a factory
 			RouteCollectorInterface::class       => create(RouteCollector::class)
@@ -132,6 +132,6 @@ class PhpDi
 					get(RouteResolverInterface::class),
 					get(MiddlewareDispatcherInterface::class)
 				)
-		);
+		];
 	}
 }

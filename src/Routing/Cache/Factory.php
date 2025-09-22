@@ -50,15 +50,15 @@ class Factory
 	) {
 		assert($key === self::NAMED_ROUTES || $key === self::DISPATCH_DATA);
 
-		$cache = $cache ?? (self::$cache ?? (self::$cache = new Memory()));
+		$cache ??= (self::$cache ??= new Memory());
 		if ($data = $cache->get($key, null)) {
 			return $data;
 		}
 
-		$collector = $collector ?? new CachedCollector(MiddlewareFactory::getResponseFactory());
+		$collector ??= new CachedCollector(MiddlewareFactory::getResponseFactory());
 		$provider->register(new Router($collector));
 
-		list($namedRoutes, $dispatchData) = $collector->build();
+		[$namedRoutes, $dispatchData] = $collector->build();
 
 		$cache->set(self::NAMED_ROUTES, $namedRoutes);
 		$cache->set(self::DISPATCH_DATA, $dispatchData);

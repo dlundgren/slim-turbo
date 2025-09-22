@@ -41,12 +41,6 @@ class DomainResolver
 	 */
 	protected $dispatcher;
 
-	/**
-	 * @param RouteCollectorInterface  $routeCollector
-	 * @param DispatcherInterface|null $dispatcher
-	 * @param bool                     $useSubdomainOnly
-	 * @param array                    $ignoreHosts
-	 */
 	public function __construct(
 		RouteCollectorInterface $routeCollector,
 		?DispatcherInterface $dispatcher = null,
@@ -63,11 +57,6 @@ class DomainResolver
 	 * Resolves the route given a URI
 	 *
 	 * This will use domains as well
-	 *
-	 * @param UriInterface $uri
-	 * @param string       $method
-	 *
-	 * @return RoutingResults
 	 */
 	public function resolveRouteFromUri(UriInterface $uri, string $method): RoutingResults
 	{
@@ -78,12 +67,6 @@ class DomainResolver
 		);
 	}
 
-	/**
-	 * @param string $uri Should be $request->getUri()->getPath()
-	 * @param string $method
-	 *
-	 * @return RoutingResults
-	 */
 	public function computeRoutingResults(string $uri, string $method): RoutingResults
 	{
 		return $this->handleDispatch($method, $uri);
@@ -91,12 +74,6 @@ class DomainResolver
 
 	/**
 	 * Common function for dealing with the both the host and path
-	 *
-	 * @param string $method
-	 * @param string $path
-	 * @param string $host
-	 *
-	 * @return RoutingResults
 	 */
 	protected function handleDispatch(string $method, string $path, string $host = ''): RoutingResults
 	{
@@ -108,11 +85,6 @@ class DomainResolver
 		return $this->dispatcher->dispatch($method, $host . $path);
 	}
 
-	/**
-	 * @param string $identifier
-	 *
-	 * @return RouteInterface
-	 */
 	public function resolveRoute(string $identifier): RouteInterface
 	{
 		return $this->routeCollector->lookupRoute($identifier);
@@ -129,7 +101,7 @@ class DomainResolver
 
 		if ($this->useSubdomainOnly) {
 			$count = substr_count($host, '.');
-			if ($count === 1 || $count === 2 && strpos($host, 'www.') !== false) {
+			if ($count === 1 || $count === 2 && str_contains($host, 'www.')) {
 				$host = '';
 			}
 			elseif ($count >= 2) {

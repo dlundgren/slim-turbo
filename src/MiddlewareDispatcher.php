@@ -45,10 +45,11 @@ class MiddlewareDispatcher
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function seedMiddlewareStack(RequestHandlerInterface $kernel): void
 	{
 		if ($kernel instanceof SlimRouteRunner) {
-			if ($this->container) {
+			if ($this->container !== null) {
 				$kernel = $this->container->has(Routing\RouteRunner::class)
 					? $this->container->get(Routing\RouteRunner::class)
 					: new RouteRunner($this->container);
@@ -80,6 +81,7 @@ class MiddlewareDispatcher
 	 * {@inheritDoc}
 	 * @param mixed $params
 	 */
+	#[\Override]
 	public function add($middleware, ...$params): MiddlewareDispatcherInterface
 	{
 		if (is_array($middleware)) {
@@ -88,9 +90,9 @@ class MiddlewareDispatcher
 			}
 		}
 		else {
-			$this->middleware[] = empty($params)
-				? $middleware
-				: [$middleware, $params];
+			$this->middleware[] = count($params)
+				? [$middleware, $params]
+				: $middleware;
 		}
 
 		return $this;
@@ -101,6 +103,7 @@ class MiddlewareDispatcher
 	 *
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function handle(ServerRequestInterface $request): ResponseInterface
 	{
 		foreach ($this->middleware as $middleware) {
@@ -142,8 +145,6 @@ class MiddlewareDispatcher
 	 *
 	 * @param string|callable|MiddlewareInterface $middleware The middleware to resolve
 	 * @param mixed                               $parameters Parameters to pass in to the middleware
-	 *
-	 * @return MiddlewareInterface
 	 */
 	protected function resolveMiddlewareWithParameters($middleware, $parameters): MiddlewareInterface
 	{
@@ -151,7 +152,8 @@ class MiddlewareDispatcher
 		if ($middleware instanceof ParameterAware) {
 			return $middleware->withParameters($parameters);
 		}
-		elseif (is_callable($middleware)) {
+
+		if (is_callable($middleware)) {
 			return $middleware(...$parameters);
 		}
 

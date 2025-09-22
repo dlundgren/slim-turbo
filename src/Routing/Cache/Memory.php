@@ -12,7 +12,7 @@ use Psr\SimpleCache\CacheInterface;
 /**
  * SimpleCache memory based caching
  *
- * @NOTE This is implemented here to prevent the need for another dependency
+ * @NOTE    This is implemented here to prevent the need for another dependency
  *
  * @package Slim\Turbo\Provider
  */
@@ -26,40 +26,40 @@ class Memory
 
 	protected function validKey($key)
 	{
-		if (preg_match('/^[a-zA-Z0-9_.]+$/', $key)) {
+		if (preg_match('/^[a-zA-Z0-9_.]+$/', (string)$key)) {
 			return $key;
 		}
 
 		throw new \InvalidArgumentException("Key is not valid: {$key}");
 	}
 
-	public function get($key, $default = null)
+	public function get(string $key, mixed $default = null): mixed
 	{
 		return $this->data[$this->validKey($key)] ?? $default;
 	}
 
-	public function set($key, $value, $ttl = null)
+	public function set(string $key, mixed $value, $ttl = null): bool
 	{
 		$this->data[$this->validKey($key)] = $value;
 
 		return true;
 	}
 
-	public function delete($key)
+	public function delete(string $key): bool
 	{
 		unset($this->data[$this->validKey($key)]);
 
 		return true;
 	}
 
-	public function clear()
+	public function clear(): bool
 	{
 		$this->data = [];
 
 		return true;
 	}
 
-	public function getMultiple($keys, $default = null)
+	public function getMultiple(\Traversable|array $keys, mixed $default = null): \Traversable|array
 	{
 		$data = [];
 		foreach ($keys as $key) {
@@ -69,7 +69,7 @@ class Memory
 		return $data;
 	}
 
-	public function setMultiple($values, $ttl = null)
+	public function setMultiple(iterable $values, $ttl = null): bool
 	{
 		foreach ($values as $key => $value) {
 			$this->data[$this->validKey($key)] = $value;
@@ -78,7 +78,7 @@ class Memory
 		return true;
 	}
 
-	public function deleteMultiple($keys)
+	public function deleteMultiple(iterable $keys): bool
 	{
 		foreach ($keys as $key) {
 			unset($this->data[$this->validKey($key)]);
@@ -87,7 +87,7 @@ class Memory
 		return true;
 	}
 
-	public function has($key)
+	public function has(string $key): bool
 	{
 		return array_key_exists($this->validKey($key), $this->data);
 	}

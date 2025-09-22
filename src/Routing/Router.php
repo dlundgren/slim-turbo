@@ -20,7 +20,7 @@ class Router
 	extends RouteCollectorProxy
 {
 	/**
-	 * @var bool Whether or not domain routing is supported by the collector
+	 * @var bool Whether domain routing is supported by the collector
 	 */
 	protected $supportsDomainRouting = false;
 
@@ -36,10 +36,7 @@ class Router
 	 *
 	 * @NOTE domain routing can only be done at the root level
 	 *
-	 * @param string          $pattern
 	 * @param string|callable $callable
-	 *
-	 * @return RouteGroupInterface
 	 */
 	public function domain(string $pattern, $callable): RouteGroupInterface
 	{

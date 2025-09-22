@@ -28,6 +28,7 @@ class RouteGroup
 	/**
 	 * {@inheritdoc}
 	 */
+	#[\Override]
 	public function collectRoutes(): RouteGroupInterface
 	{
 		if (is_callable($this->callable)) {
